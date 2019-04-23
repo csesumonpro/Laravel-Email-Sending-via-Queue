@@ -25,4 +25,5 @@ Route::group(['prefix'=>'admin'],function(){
     Route::post('admin-login','Admin\AdminLoginController@login')->name('admin.adminlogin');
     Route::get('admin-dashboard','Admin\AdminController@index')->name('admin.dashboard');
     Route::get('admin-logout','Admin\AdminLoginController@logout')->name('admin.logout');
+    Route::get('admin-verify/{token}','Admin\AdminLoginController@verify_admin')->name('admin.verify');
 });

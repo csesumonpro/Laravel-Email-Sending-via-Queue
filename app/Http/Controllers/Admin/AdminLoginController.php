@@ -8,6 +8,11 @@ use App\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminMailVerify;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Carbon;
+
 class AdminLoginController extends Controller
 {
     public function __construct()
@@ -28,29 +33,37 @@ class AdminLoginController extends Controller
         'email' => ['required', 'string', 'email', 'max:255', 'unique:admins'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
        ]);
-
-        Admin::create([
+        $user = Admin::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'token'=>Str::uuid(),
       ]);
-        return back()->with('success','Admin User Created Successfully...'); 
+      Mail::to($request->email)->send(new AdminMailVerify($user));
+        return back()->with('success','Registration Complete Please Verify Your Email...'); 
     }
     public function login(Request $request)
     {
-     
+    $user = Admin::where('email',$request->email)->first();
+      if($user){
+        if($user->email_verified_at != null){
+          if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+            // if successful, then redirect to their intended location
+            return redirect()->intended(route('admin.dashboard'));
+          } 
+        }else{
+          return back()->with('warning','Your are verified user...!'); 
+        }
+    
+      }else{
+        return back()->with('warning','Your are not registered user...!'); 
+      }
       // Validate the form data
       $this->validate($request, [
         'email'   => 'required|email',
         'password' => 'required|min:6'
       ]);
-      
-      // Attempt to log the user in
-      if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-        // if successful, then redirect to their intended location
-        return redirect()->intended(route('admin.dashboard'));
-      } 
+     
       // if unsuccessful, then redirect back to the login with the form data
       return redirect()->back()->withInput($request->only('email', 'remember'));
     }
@@ -59,5 +72,18 @@ class AdminLoginController extends Controller
     {
         Auth::guard('admin')->logout();
         return redirect('/');
+    }
+    public function verify_admin($token=null)
+    {
+      $user = Admin::where('token',$token)->first();
+      if($user){
+        $user->token = '';
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+        return redirect()->route('admin.login')->with('success','Your Account Successfully Verified Please Login...'); 
+      }else{
+        return back()->with('warning','Your Verification Token Not Match...!'); 
+      }
+      
     }
 }

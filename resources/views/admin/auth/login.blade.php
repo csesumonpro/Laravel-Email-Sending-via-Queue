@@ -3,6 +3,16 @@
 <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
+                    <h4 class="text-warning text-center">
+                            @if (session()->has('warning'))
+                            {{session()->get('warning')}}    
+                            @endif
+                    </h4> 
+                    <h4 class="text-success text-center">
+                            @if (session()->has('success'))
+                            {{session()->get('success')}}    
+                            @endif
+                    </h4> 
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
