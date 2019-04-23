@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminMailVerify;
-use Illuminate\Foundation\Auth\User;
+
 use Illuminate\Support\Carbon;
 
 class AdminLoginController extends Controller
@@ -39,7 +39,7 @@ class AdminLoginController extends Controller
         'password' => Hash::make($request->password),
         'token'=>Str::uuid(),
       ]);
-      Mail::to($request->email)->send(new AdminMailVerify($user));
+      Mail::to($request->email)->queue(new AdminMailVerify($user));
         return back()->with('success','Registration Complete Please Verify Your Email...'); 
     }
     public function login(Request $request)
