@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,3 +28,6 @@ Route::group(['prefix'=>'admin'],function(){
     Route::get('admin-logout','Admin\AdminLoginController@logout')->name('admin.logout');
     Route::get('admin-verify/{token}','Admin\AdminLoginController@verify_admin')->name('admin.verify');
 });
+
+Route::resource('post-cache',PostCacheController::class);
+Route::get('custom-delete/{id}','PostCacheController@custom_method')->name('custom-delete');

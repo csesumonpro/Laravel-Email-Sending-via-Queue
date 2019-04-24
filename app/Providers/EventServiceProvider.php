@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Events\PostCreated;
+use App\Listeners\PostCacheListner;
+use App\Events\PostUpdated;
+use App\Events\PostDeleted;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +22,16 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        PostCreated::class => [
+            PostCacheListner::class,
+        ],
+        PostUpdated::class => [
+            PostCacheListner::class,
+        ],
+        PostDeleted::class => [
+            PostCacheListner::class,
+        ],
+
     ];
 
     /**
