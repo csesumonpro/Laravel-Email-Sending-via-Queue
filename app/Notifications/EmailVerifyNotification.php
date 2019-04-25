@@ -6,8 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-
-class EmailVerifyNotification extends Notification
+use Illuminate\Notifications\Messages\NexmoMessage;
+class EmailVerifyNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     protected $user;
@@ -29,7 +29,7 @@ class EmailVerifyNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail','nexmo'];
     }
 
     /**
@@ -52,6 +52,13 @@ class EmailVerifyNotification extends Notification
         //     'email.admin_verify', ['user' => $this->user]
         // );
     }
+    public function toNexmo($notifiable)
+{
+    return (new NexmoMessage)
+                ->content("Hello {$this->user->name} Your Account Succesfylly Registered.");
+               
+                
+}
 
     /**
      * Get the array representation of the notification.

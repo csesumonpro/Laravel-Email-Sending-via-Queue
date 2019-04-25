@@ -33,10 +33,12 @@ class AdminLoginController extends Controller
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'email', 'max:255', 'unique:admins'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
+        'phone_number' => ['required', 'min:9','max:14','unique:admins'],
        ]);
         $user = Admin::create([
         'name' => $request->name,
         'email' => $request->email,
+        'phone_number' => $request->phone_number,
         'password' => Hash::make($request->password),
         'token'=>Str::uuid(),
       ]);
