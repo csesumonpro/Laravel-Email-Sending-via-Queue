@@ -52,13 +52,15 @@ class EmailVerifyNotification extends Notification implements ShouldQueue
         //     'email.admin_verify', ['user' => $this->user]
         // );
     }
-    public function toNexmo($notifiable)
-{
-    return (new NexmoMessage)
-                ->content("Hello {$this->user->name} Your Account Succesfylly Registered.");
-               
+    
+    // Below Function used for sending SMS
+    // public function toNexmo($notifiable)
+    // {
+    //     return (new NexmoMessage)
+    //                 ->content("Hello {$this->user->name} Your Account Succesfylly Registered.");
                 
-}
+                    
+    // }
 
     /**
      * Get the array representation of the notification.

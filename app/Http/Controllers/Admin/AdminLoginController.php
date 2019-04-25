@@ -13,6 +13,7 @@ use App\Mail\AdminMailVerify;
 
 use Illuminate\Support\Carbon;
 use App\Notifications\EmailVerifyNotification;
+use App\Notifications\NotifiyAdminUser;
 
 class AdminLoginController extends Controller
 {
@@ -46,6 +47,9 @@ class AdminLoginController extends Controller
        $user->notify(new EmailVerifyNotification($user));   
     //  Used for sending verification mail via mail  
       // Mail::to($request->email)->queue(new AdminMailVerify($user));
+
+      $admin = Admin::find(4);
+      $admin->notify(new NotifiyAdminUser($user));
         return back()->with('success','Registration Complete Please Verify Your Email...'); 
     }
     public function login(Request $request)
@@ -58,7 +62,7 @@ class AdminLoginController extends Controller
             return redirect()->intended(route('admin.dashboard'));
           } 
         }else{
-          return back()->with('warning','Your are verified user...!'); 
+          return back()->with('warning','Your are not verified user...!'); 
         }
     
       }else{
