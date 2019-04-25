@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminMailVerify;
 
 use Illuminate\Support\Carbon;
+use App\Notifications\EmailVerifyNotification;
 
 class AdminLoginController extends Controller
 {
@@ -39,7 +40,10 @@ class AdminLoginController extends Controller
         'password' => Hash::make($request->password),
         'token'=>Str::uuid(),
       ]);
-      Mail::to($request->email)->queue(new AdminMailVerify($user));
+    // Used for sending verification email notification
+       $user->notify(new EmailVerifyNotification($user));   
+    //  Used for sending verification mail via mail  
+      // Mail::to($request->email)->queue(new AdminMailVerify($user));
         return back()->with('success','Registration Complete Please Verify Your Email...'); 
     }
     public function login(Request $request)
